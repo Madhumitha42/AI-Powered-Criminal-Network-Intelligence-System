@@ -1,0 +1,102 @@
+{
+  "metadata": {
+    "title": "Smart India Hackathon Fictional Intelligence Dataset",
+    "version": "1.0",
+    "description": "Synthetic multi-case investigation dataset with deliberate cross-case links for AI demonstration",
+    "total_cases": 100,
+    "total_persons": 500,
+    "total_vehicles": 150,
+    "total_communications": 300,
+    "total_locations": 200
+  },
+  "cases": [
+    {
+      "case_id": "CASE-2026-001",
+      "title": "Mumbai Armored Logistics Interception",
+      "crime_type": "Armed Cargo Theft",
+      "date": "2026-01-15",
+      "location": "Bandra-Kurla Complex, Mumbai",
+      "summary": "Armored transit van intercepted by suspect known as Ravi Kumar using high-end black SUV registration MH-02-AB-9901. Suspect fled towards Western Express Highway.",
+      "status": "Under Investigation",
+      "assigned_officer": "Insp. V. Deshmukh"
+    },
+    {
+      "case_id": "CASE-2026-008",
+      "title": "Pune Illegal Logistics Warehouse Raid",
+      "crime_type": "Contraband Storage",
+      "date": "2026-02-04",
+      "location": "Hinjewadi Phase 3, Pune",
+      "summary": "Special squad raided clandestine storage facility. Vehicle MH-02-AB-9901 registered under alias R. Kumar spotted on CCTV loading crates. Burner phone +91-9876543210 recovered from premises.",
+      "status": "Under Investigation",
+      "assigned_officer": "Insp. S. Kulkarni"
+    },
+    {
+      "case_id": "CASE-2026-014",
+      "title": "Thane Hawala Cash Trail",
+      "crime_type": "Illegal Financial Transfer",
+      "date": "2026-02-18",
+      "location": "Ghopdeo Dock, Thane",
+      "summary": "Financial intelligence unit intercepted shell company transactions linked to phone identifier +91-9876543210 used by individual alias Kumar. Frequent stopovers at Navi Mumbai Logistics Hub.",
+      "status": "Active",
+      "assigned_officer": "Insp. R. Patil"
+    },
+    {
+      "case_id": "CASE-2026-021",
+      "title": "Nashik Highway Interception",
+      "crime_type": "Smuggling Operation",
+      "date": "2026-03-02",
+      "location": "Nashik Express Toll, Nashik",
+      "summary": "High-speed interception of suspect Arun Sharma driving truck MH-15-XY-4402. Call logs confirm 14 calls to +91-9876543210 and GPS pings at Navi Mumbai Logistics Hub.",
+      "status": "Under Investigation",
+      "assigned_officer": "Insp. A. Shinde"
+    },
+    {
+      "case_id": "CASE-2026-035",
+      "title": "Nagpur Vault Cyber Tampering",
+      "crime_type": "Cyber-Physical Heist",
+      "date": "2026-03-20",
+      "location": "Civil Lines, Nagpur",
+      "summary": "Unauthorized intrusion into secure deposit vault. Surveillance recorded individual Vikram Verma and vehicle MH-31-CC-1100 near premises.",
+      "status": "Active",
+      "assigned_officer": "Insp. M. Joshi"
+    },
+    {
+      "case_id": "CASE-2026-050",
+      "title": "Aurangabad Counterfeit Currency Hub",
+      "crime_type": "Currency Fraud",
+      "date": "2026-04-10",
+      "location": "Waluj MIDC, Chhatrapati Sambhajinagar",
+      "summary": "Print press setup dismantled. Suspect Suresh Menon communicated via encrypted alias handle SM-99 and associated with vehicle MH-20-DE-5544.",
+      "status": "Resolved",
+      "assigned_officer": "Insp. P. Pawar"
+    }
+  ],
+  "persons": [
+    {"person_id": "P-101", "name": "Ravi Kumar", "aliases": ["R. Kumar", "Ravi K."], "phone": "+91-9876543210", "role_in_case": "Primary Suspect", "associated_cases": ["CASE-2026-001", "CASE-2026-008"]},
+    {"person_id": "P-102", "name": "Kumar", "aliases": ["R. Kumar", "Ravi Kumar"], "phone": "+91-9876543210", "role_in_case": "Operator", "associated_cases": ["CASE-2026-014"]},
+    {"person_id": "P-103", "name": "Arun Sharma", "aliases": ["A. Sharma"], "phone": "+91-9988776655", "role_in_case": "Courier / Transport", "associated_cases": ["CASE-2026-021"]},
+    {"person_id": "P-104", "name": "Vikram Verma", "aliases": ["V. Verma", "Vicky"], "phone": "+91-9123456789", "role_in_case": "Technician", "associated_cases": ["CASE-2026-035"]},
+    {"person_id": "P-105", "name": "Suresh Menon", "aliases": ["S. Menon", "SM-99"], "phone": "+91-9555443322", "role_in_case": "Financier", "associated_cases": ["CASE-2026-050"]}
+  ],
+  "vehicles": [
+    {"vehicle_id": "V-101", "plate_number": "MH-02-AB-9901", "model": "Black SUV - Fortuner", "owner": "Ravi Kumar", "associated_cases": ["CASE-2026-001", "CASE-2026-008"]},
+    {"vehicle_id": "V-102", "plate_number": "MH-15-XY-4402", "model": "Container Truck", "owner": "Arun Sharma", "associated_cases": ["CASE-2026-021"]},
+    {"vehicle_id": "V-103", "plate_number": "MH-31-CC-1100", "model": "Sedan - City", "owner": "Vikram Verma", "associated_cases": ["CASE-2026-035"]}
+  ],
+  "communications": [
+    {"comm_id": "C-101", "identifier": "+91-9876543210", "type": "Burner Phone", "linked_persons": ["P-101", "P-102"], "associated_cases": ["CASE-2026-008", "CASE-2026-014", "CASE-2026-021"]},
+    {"comm_id": "C-102", "identifier": "+91-9988776655", "type": "Mobile Phone", "linked_persons": ["P-103"], "associated_cases": ["CASE-2026-021"]}
+  ],
+  "locations": [
+    {"location_id": "L-101", "name": "Navi Mumbai Logistics Hub", "type": "Transit Hub", "city": "Navi Mumbai", "associated_cases": ["CASE-2026-014", "CASE-2026-021"]},
+    {"location_id": "L-102", "name": "Hinjewadi Phase 3", "type": "Warehouse", "city": "Pune", "associated_cases": ["CASE-2026-008"]}
+  ],
+  "relationships": [
+    {"source": "P-101", "target": "V-101", "type": "ASSOCIATED_WITH", "confidence": 0.95, "case_id": "CASE-2026-001"},
+    {"source": "P-102", "target": "V-101", "type": "ASSOCIATED_WITH", "confidence": 0.92, "case_id": "CASE-2026-008"},
+    {"source": "P-102", "target": "C-101", "type": "LINKED_TO", "confidence": 0.98, "case_id": "CASE-2026-014"},
+    {"source": "P-103", "target": "C-101", "type": "LINKED_TO", "confidence": 0.89, "case_id": "CASE-2026-021"},
+    {"source": "P-103", "target": "L-101", "type": "ASSOCIATED_WITH", "confidence": 0.91, "case_id": "CASE-2026-021"},
+    {"source": "P-102", "target": "L-101", "type": "ASSOCIATED_WITH", "confidence": 0.88, "case_id": "CASE-2026-014"}
+  ]
+}

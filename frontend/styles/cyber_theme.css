@@ -1,0 +1,120 @@
+/* Cyber-Intelligence Dark Command Center CSS Theme */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Inter:wght@300;400;600;700&display=swap');
+
+:root {
+    --bg-dark: #07090E;
+    --card-bg: rgba(13, 20, 36, 0.75);
+    --card-border: rgba(0, 240, 255, 0.25);
+    --electric-blue: #00F0FF;
+    --neon-purple: #9D00FF;
+    --cyan-glow: #00FFFF;
+    --success-green: #00FF88;
+    --warning-amber: #FFB700;
+    --alert-red: #FF3366;
+    --text-main: #E2E8F0;
+    --text-muted: #94A3B8;
+}
+
+/* Global Page Background */
+.stApp {
+    background-color: var(--bg-dark);
+    background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.08) 0%, transparent 50%),
+        linear-gradient(180deg, rgba(7, 9, 14, 0.98) 0%, rgba(13, 17, 23, 1) 100%);
+    font-family: 'Inter', sans-serif;
+    color: var(--text-main);
+}
+
+/* Headings */
+h1, h2, h3 {
+    font-family: 'Orbitron', sans-serif !important;
+    letter-spacing: 1px;
+}
+
+h1 {
+    color: var(--electric-blue) !important;
+    text-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+}
+
+h2 {
+    color: #FFFFFF !important;
+}
+
+/* Glassmorphism HUD Cards */
+.hud-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    backdrop-filter: blur(12px);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+}
+
+.hud-card:hover {
+    border-color: var(--electric-blue);
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+}
+
+/* Metric Display Panels */
+.metric-value {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--electric-blue);
+    text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+}
+
+.metric-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+/* Status Badges */
+.badge-active {
+    background: rgba(0, 255, 136, 0.15);
+    color: var(--success-green);
+    border: 1px solid var(--success-green);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge-high {
+    background: rgba(255, 51, 102, 0.15);
+    color: var(--alert-red);
+    border: 1px solid var(--alert-red);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Streamlit Sidebar Styling */
+section[data-testid="stSidebar"] {
+    background-color: #0A0D14;
+    border-right: 1px solid rgba(0, 240, 255, 0.15);
+}
+
+/* Buttons */
+.stButton>button {
+    background: linear-gradient(135deg, rgba(0, 240, 255, 0.2) 0%, rgba(157, 0, 255, 0.3) 100%) !important;
+    color: #FFFFFF !important;
+    border: 1px solid var(--electric-blue) !important;
+    border-radius: 8px !important;
+    font-family: 'Orbitron', sans-serif !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+}
+
+.stButton>button:hover {
+    background: linear-gradient(135deg, rgba(0, 240, 255, 0.5) 0%, rgba(157, 0, 255, 0.6) 100%) !important;
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.6) !important;
+    transform: translateY(-2px);
+}
