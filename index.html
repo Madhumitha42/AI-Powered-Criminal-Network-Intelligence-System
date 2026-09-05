@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Criminal Network Intelligence & Investigation Support System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style>
+        :root {
+            --bg-dark: #07090E;
+            --card-bg: rgba(13, 20, 36, 0.85);
+            --card-border: rgba(0, 240, 255, 0.3);
+            --electric-blue: #00F0FF;
+            --neon-purple: #9D00FF;
+            --cyan-glow: #00FFFF;
+            --success-green: #00FF88;
+            --warning-amber: #FFB700;
+            --alert-red: #FF3366;
+            --text-main: #E2E8F0;
+            --text-muted: #94A3B8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.12) 0%, transparent 60%),
+                linear-gradient(180deg, rgba(7, 9, 14, 0.98) 0%, rgba(13, 17, 23, 1) 100%);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 5%;
+            border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+            background: rgba(7, 9, 14, 0.95);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            font-size: 2rem;
+            filter: drop-shadow(0 0 10px var(--electric-blue));
+        }
+
+        .brand-title {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--electric-blue);
+            letter-spacing: 1px;
+        }
+
+        .brand-sub {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            letter-spacing: 1.5px;
+        }
+
+        nav {
+            display: flex;
+            gap: 6px;
+            background: rgba(13, 20, 36, 0.6);
+            padding: 4px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 240, 255, 0.15);
+            overflow-x: auto;
+        }
+
+        .nav-btn {
+            background: transparent;
+            color: var(--text-muted);
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            color: #FFFFFF;
+            background: rgba(0, 240, 255, 0.2);
+            border: 1px solid var(--electric-blue);
+            box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
+        }
+
+        .badge-sih {
+            background: rgba(0, 255, 136, 0.15);
+            color: var(--success-green);
+            border: 1px solid var(--success-green);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        main {
+            flex: 1;
+            padding: 30px 5%;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hud-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        @media (max-width: 900px) {
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+
+        .metric-val {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--electric-blue);
+            text-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+        }
+
+        .metric-lbl {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.25) 0%, rgba(157, 0, 255, 0.35) 100%);
+            color: #FFFFFF;
+            border: 1px solid var(--electric-blue);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.5) 0%, rgba(157, 0, 255, 0.6) 100%);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            border-color: var(--success-green);
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--success-green);
+        }
+
+        .btn-danger {
+            border-color: var(--alert-red);
+            background: rgba(255, 51, 102, 0.2);
+            color: var(--alert-red);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            background: rgba(7, 9, 14, 0.8);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            color: #FFFFFF;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            margin-top: 6px;
+            margin-bottom: 15px;
+            outline: none;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--electric-blue);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+        }
+
+        #network-canvas {
+            width: 100%;
+            height: 520px;
+            border-radius: 10px;
+            background: #05070B;
+            border: 1px solid rgba(0, 240, 255, 0.2);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 240, 255, 0.15);
+        }
+
+        th {
+            background: rgba(0, 240, 255, 0.1);
+            color: var(--electric-blue);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        tr:hover {
+            background: rgba(0, 240, 255, 0.05);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px 5%;
+            border-top: 1px solid rgba(0, 240, 255, 0.2);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            background: rgba(7, 9, 14, 0.95);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand">
+            <div class="brand-icon">🛡️</div>
+            <div>
+                <div class="brand-title">CRIMINAL NETWORK</div>
+                <div class="brand-sub">INTELLIGENCE SYSTEM</div>
+            </div>
+        </div>
+
+        <nav>
+            <button class="nav-btn active" onclick="switchTab('tab-home')">🏠 Home</button>
+            <button class="nav-btn" onclick="switchTab('tab-dashboard')">📊 Dashboard</button>
+            <button class="nav-btn" onclick="switchTab('tab-cases')">📁 Cases</button>
+            <button class="nav-btn" onclick="switchTab('tab-entities')">👤 Entities</button>
+            <button class="nav-btn" onclick="switchTab('tab-network')">🕸️ Network Graph</button>
+            <button class="nav-btn" onclick="switchTab('tab-behavior')">🧠 Behavioral AI</button>
+            <button class="nav-btn" onclick="switchTab('tab-timeline')">⏳ Timeline</button>
+            <button class="nav-btn" onclick="switchTab('tab-xai')">💡 XAI Insights</button>
+            <button class="nav-btn" onclick="switchTab('tab-reports')">📜 Reports & Audit</button>
+        </nav>
+
+        <div class="badge-sih">INTELLIGENCE PLATFORM v1.0</div>
+    </header>
+
+    <main>
+        <!-- 1. HOME TAB -->
+        <div id="tab-home" class="tab-content active">
+            <div class="grid-2" style="align-items: center; margin-bottom: 40px;">
+                <div>
+                    <span style="color: var(--success-green); font-size: 0.8rem; font-weight: 600; letter-spacing: 1px; background: rgba(0,255,136,0.1); padding: 4px 10px; border-radius: 12px; border: 1px solid var(--success-green);">AI-POWERED INVESTIGATION SUPPORT</span>
+                    <h1 style="font-family: 'Orbitron'; font-size: 2.8rem; margin: 15px 0; line-height: 1.2;">
+                        AI-POWERED<br>
+                        <span style="color: var(--electric-blue); text-shadow: 0 0 20px rgba(0,240,255,0.6);">CRIMINAL NETWORK</span><br>
+                        ANALYSIS SYSTEM
+                    </h1>
+                    <p style="font-style: italic; color: var(--cyan-glow); font-size: 1.1rem; margin-bottom: 20px;">
+                        “Connect the Evidence. Discover the Patterns. Support the Investigation.”
+                    </p>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 30px; line-height: 1.6;">
+                        An advanced decision-support platform transforming multi-case records into interactive Knowledge Graphs using spaCy NLP entity extraction, NetworkX centrality analytics, behavioral pattern detection, and Explainable AI (XAI) leads.
+                    </p>
+                    <div style="display: flex; gap: 15px;">
+                        <button class="btn" onclick="switchTab('tab-network')">🚀 EXPLORE NETWORK GRAPH →</button>
+                        <button class="btn" style="background: transparent; border-color: rgba(255,255,255,0.2);" onclick="switchTab('tab-xai')">💡 VIEW XAI LEADS</button>
+                    </div>
+                </div>
+
+                <div class="hud-card" style="text-align: center; padding: 40px;">
+                    <div style="width: 170px; height: 170px; margin: 0 auto 20px; border-radius: 50%; border: 2px dashed var(--electric-blue); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(0,240,255,0.3);">
+                        <div style="width: 120px; height: 120px; border-radius: 50%; border: 1px solid var(--neon-purple); display: flex; align-items: center; justify-content: center; font-size: 3rem;">🧠</div>
+                    </div>
+                    <h3 style="font-family: 'Orbitron'; color: var(--cyan-glow);">BEHAVIORAL AI KNOWLEDGE CORE</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 8px;">
+                        Person • Vehicle • Location • Communication • Case • Organization
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid-4">
+                <div class="hud-card">
+                    <div class="metric-lbl">Cases Analyzed</div>
+                    <div class="metric-val">12,846</div>
+                    <div style="font-size: 0.75rem; color: var(--success-green);">+100 Case Records</div>
+                </div>
+                <div class="hud-card">
+                    <div class="metric-lbl">Entities Extracted</div>
+                    <div class="metric-val">8,327</div>
+                    <div style="font-size: 0.75rem; color: var(--electric-blue);">Person, Vehicle, Comms</div>
+                </div>
+                <div class="hud-card">
+                    <div class="metric-lbl">Networks Detected</div>
+                    <div class="metric-val">3,142</div>
+                    <div style="font-size: 0.75rem; color: var(--neon-purple);">Cross-Case Overlaps</div>
+                </div>
+                <div class="hud-card">
+                    <div class="metric-lbl">Analysis Accuracy</div>
+                    <div class="metric-val">98.7%</div>
+                    <div style="font-size: 0.75rem; color: var(--success-green);">Explainable AI Precision</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. DASHBOARD TAB -->
+        <div id="tab-dashboard" class="tab-content">
+            <h2 style="font-family: 'Orbitron'; color: var(--electric-blue); margin-bottom: 8px;">📊 Investigation Command Dashboard</h2>
+            <p style="color: var(--text-muted); margin-bottom: 25px;">Real-Time Analytics & Cross-Case Intelligence Summary</p>
+
+            <div class="grid-4">
+                <div class="hud-card"><div class="metric-lbl">Active Cases</div><div class="metric-val">6</div></div>
+                <div class="hud-card"><div class="metric-lbl">Total Entities</div><div class="metric-val">12</div></div>
+                <div class="hud-card"><div class="metric-lbl">Cross-Case Patterns</div><div class="metric-val" style="color: var(--warning-amber);">4</div></div>
+                <div class="hud-card"><div class="metric-lbl">AI Confidence</div><div class="metric-val" style="color: var(--success-green);">94.2%</div></div>
+            </div>
+
+            <div class="hud-card">
+                <h3 style="font-family: 'Orbitron'; color: #FFFFFF; margin-bottom: 15px;">📋 Active Investigation Case Files</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Case ID</th>
+                            <th>Case Title</th>
+                            <th>Crime Type</th>
+                            <th>Incident Date</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dashboard-cases-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 3. CASES TAB -->
+        <div id="tab-cases" class="tab-content">
+            <h2 style="font-family: 'Orbitron'; color: var(--electric-blue); margin-bottom: 8px;">📁 Case Management & Ingestion</h2>
+            <p style="color: var(--text-muted); margin-bottom: 25px;">Upload Unformatted Interrogation Notes & Execute NLP Entity Extraction</p>
+
+            <div class="grid-2">
+                <div class="hud-card">
+                    <h3 style="font-family: 'Orbitron'; color: var(--electric-blue); margin-bottom: 15px;">🤖 Execute AI NLP Extraction Sandbox</h3>
+                    <label>Case Identifier:</label>
+                    <input type="text" id="nlp-case-id" value="CASE-2026-099">
+
+                    <label>Raw Interrogation Notes / Case Narrative:</label>
+                    <textarea id="nlp-text" rows="5">Armored van stopped at Bandra West by suspect Ravi Kumar driving black SUV MH-02-AB-9901. Suspect used burner phone +91-9876543210 and fled towards Pune Warehouse.</textarea>
+
+                    <button class="btn" onclick="runNLPExtraction()">⚡ EXECUTE AI EXTRACTION</button>
+                </div>
+
+                <div class="hud-card">
+                    <h3 style="font-family: 'Orbitron'; color: var(--success-green); margin-bottom: 15px;">🧩 Extracted Entities Output</h3>
+                    <div id="nlp-output">
+                        <p style="color: var(--text-muted);">Click "Execute AI Extraction" to extract Persons, Vehicles, Comms, and Locations.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. ENTITIES TAB -->
+        <div id="tab-entities" class="tab-content">
+            <h2 style="font-family: 'Orbitron'; color: var(--electric-blue); margin-bottom: 8px;">👤 Entity Intelligence Profile Explorer</h2>
+            <p style="color: var(--text-muted); margin-bottom: 25px;">Detailed Profiles, Aliases, Associated Assets & Cross-Case Connections</p>
+
+            <label>🔍 Select Entity to Inspect:</label>
+            <select id="entity-select" onchange="renderEntityProfile()"></select>
+
+            <div id="entity-profile-container"></div>
+        </div>
+
+        <!-- 5. NETWORK GRAPH TAB -->
+        <div id="tab-network" class="tab-content">
+            <h2 style="font-family: 'Orbitron'; color: var(--electric-blue); margin-bottom: 8px;">🕸️ Knowledge Graph Network Explorer</h2>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">Multi-Layer Entity Graph, Centrality Metrics & Multi-Hop Path Discovery</p>
+
+            <div class="hud-card" style="margin-bottom: 15px; padding: 15px;">
+                <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+                    <span style="color: #00F0FF;">● Person</span>
+                    <span style="color: #9D00FF;">● Vehicle</span>
+                    <span style="color: #00FF88;">● Location</span>
+                    <span style="color: #FFB700;">● Communication</span>
+                    <span style="color: #FF3366;">● Case Record</span>
+                </div>
+            </div>
+
+            <div id="network-canvas"></div>
+
+            <div class="hud-card" style="margin-top: 25px;">
+                <h3 style="font-family: 'Orbitron'; color: var(--electric-blue); margin-bottom: 15px;">🔀 Multi-Hop Cross-Case Path Finder</h3>
+                <div class="grid-2" style="grid-template-columns: 1fr 1fr 180px; align-items: end;">
+                    <div>
+                        <label>Start Entity ID:</label>
+                        <input type="text" id="path-start" value="P-101">
+                    </div>
+                    <div>
+                        <label>Target Entity ID:</label>
+                        <input type="text" id="path-end" value="P-103">
+                    </div>
+                    <div>
+                        <button class="btn" style="width: 100%; margin-bottom: 15px;" onclick="findCrossCasePath()">🔍 DISCOVER PATH</button>
+                    </div>
+                </div>
+                <div id="path-result" style="margin-top: 10px;"></div>
+            </div>
+        </div>
+
+        <!-- 6. BEHAVIORAL AI TAB -->
+        <div id="tab-behavior" class="tab-content">
+            <h2 style="font-family: 'Orbitron'; color: var(--electric-blue); margin-bottom: 8px;">🧠 Behavioral Pattern Intelligence Engine</h2>
+            <p style="color: var(--text-muted); margin-bottom: 25px;">Recurring Interactions, Vehicle Overlaps, Location Hotspots & Communication Relay Hubs</p>
+
+            <div class="hud-card">
+                <h3 style="font-family: 'Orbitron'; color: var(--electric-blue); margin-bottom: 15px;">🔁 Detected Recurring Patterns</h3>
+                <div id="patterns-list"></div>
+            </div>
+        </div>
+
+        <!-- 7. TIMELINE TAB -->
+        <div id="tab-timeline" class="tab-content">
+            <h2 style="font-family: 'Orbitron'; color: var(--electric-blue); margin-bottom: 8px;">⏳ Temporal Sequence & Timeline Analysis</h2>
+            <p style="color: var(--text-muted); margin-bottom: 25px;">Chronological Incident Flow & Multi-Case Event Progression</p>
+
+            <div id="timeline-list"></div>
+        </div>
+
+        <!-- 8. XAI INSIGHTS TAB -->
+        <div id="tab-xai" class="tab-content">
+            <h2 style="font-family: 'Orbitron'; color: var(--electric-blue); margin-bottom: 8px;">💡 Explainable AI (XAI) Cards & Human Review</h2>
+            <p style="color: var(--text-muted); margin-bottom: 25px;">Transparent Reasoning, Confidence Scores & Human-in-the-Loop Investigator Verification</p>
+
+            <div id="xai-cards-list"></div>
+        </div>
+
+        <!-- 9. REPORTS TAB -->
+        <div id="tab-reports" class="tab-content">
+            <h2 style="font-family: 'Orbitron'; color: var(--electric-blue); margin-bottom: 8px;">📜 Master Investigation Summary & Audit Log</h2>
+            <p style="color: var(--text-muted); margin-bottom: 25px;">Official Case Export & Role-Based Action Audit Trail</p>
+
+            <div class="hud-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="font-family: 'Orbitron'; color: #FFFFFF;">📑 Official Case Summary Export</h3>
+                    <button class="btn btn-success" onclick="downloadJSONReport()">💾 DOWNLOAD REPORT (JSON)</button>
+                </div>
+                <div id="summary-export-view"></div>
+            </div>
+
+            <div class="hud-card">
+                <h3 style="font-family: 'Orbitron'; color: var(--electric-blue); margin-bottom: 15px;">🔒 Investigator Audit Log Stream</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Log ID</th>
+                            <th>Timestamp</th>
+                            <th>Investigator</th>
+                            <th>Action Type</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody id="audit-log-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        © 2026 AI-Powered Criminal Network Intelligence & Investigation Support System
+    </footer>
+
+    <script>
+        const DATA = {
+            cases: [
+                { case_id: "CASE-2026-001", title: "Mumbai Armored Logistics Interception", crime_type: "Armed Cargo Theft", date: "2026-01-15", location: "Bandra-Kurla Complex, Mumbai", status: "Under Investigation", assigned_officer: "Insp. V. Deshmukh", summary: "Armored transit van intercepted by suspect known as Ravi Kumar using high-end black SUV registration MH-02-AB-9901." },
+                { case_id: "CASE-2026-008", title: "Pune Illegal Logistics Warehouse Raid", crime_type: "Contraband Storage", date: "2026-02-04", location: "Hinjewadi Phase 3, Pune", status: "Under Investigation", assigned_officer: "Insp. S. Kulkarni", summary: "Special squad raided clandestine storage facility. Vehicle MH-02-AB-9901 registered under alias R. Kumar spotted on CCTV loading crates. Burner phone +91-9876543210 recovered." },
+                { case_id: "CASE-2026-014", title: "Thane Hawala Cash Trail", crime_type: "Illegal Financial Transfer", date: "2026-02-18", location: "Ghopdeo Dock, Thane", status: "Active", assigned_officer: "Insp. R. Patil", summary: "Financial intelligence unit intercepted shell company transactions linked to phone identifier +91-9876543210 used by alias Kumar." },
+                { case_id: "CASE-2026-021", title: "Nashik Highway Interception", crime_type: "Smuggling Operation", date: "2026-03-02", location: "Nashik Express Toll, Nashik", status: "Under Investigation", assigned_officer: "Insp. A. Shinde", summary: "High-speed interception of suspect Arun Sharma driving truck MH-15-XY-4402. Call logs confirm 14 calls to +91-9876543210." }
+            ],
+            entities: [
+                { entity_id: "P-101", name: "Ravi Kumar", type: "Person", associated_cases: ["CASE-2026-001", "CASE-2026-008"], details: { aliases: ["R. Kumar", "Ravi K."], phone: "+91-9876543210", role: "Primary Suspect" } },
+                { entity_id: "P-102", name: "Kumar", type: "Person", associated_cases: ["CASE-2026-008", "CASE-2026-014"], details: { aliases: ["R. Kumar", "Ravi Kumar"], phone: "+91-9876543210", role: "Logistics Operator" } },
+                { entity_id: "P-103", name: "Arun Sharma", type: "Person", associated_cases: ["CASE-2026-021"], details: { aliases: ["A. Sharma"], phone: "+91-9988776655", role: "Transport Driver" } },
+                { entity_id: "V-101", name: "MH-02-AB-9901", type: "Vehicle", associated_cases: ["CASE-2026-001", "CASE-2026-008"], details: { model: "Black Fortuner SUV", owner: "Ravi Kumar" } },
+                { entity_id: "C-101", name: "+91-9876543210", type: "Communication", associated_cases: ["CASE-2026-008", "CASE-2026-014", "CASE-2026-021"], details: { type: "Burner Phone", network: "GSM" } },
+                { entity_id: "L-101", name: "Navi Mumbai Logistics Hub", type: "Location", associated_cases: ["CASE-2026-014", "CASE-2026-021"], details: { city: "Navi Mumbai", venue: "Transit Warehouse" } }
+            ],
+            audit_logs: [
+                { log_id: "LOG-20260903001", timestamp: new Date().toISOString(), user: "Insp. V. Deshmukh", action: "INITIALIZE_SYSTEM", details: "Criminal Intelligence Engine System Started" }
+            ]
+        };
+
+        let networkInstance = null;
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+
+            if (tabId === 'tab-network') {
+                setTimeout(initNetworkGraph, 100);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderDashboardCases();
+            renderEntityOptions();
+            renderEntityProfile();
+            renderPatterns();
+            renderTimeline();
+            renderXAICards();
+            renderAuditTrail();
+        });
+
+        function renderDashboardCases() {
+            const tbody = document.getElementById('dashboard-cases-body');
+            tbody.innerHTML = DATA.cases.map(c => `
+                <tr>
+                    <td><b style="color:var(--electric-blue);">${c.case_id}</b></td>
+                    <td>${c.title}</td>
+                    <td><span style="background:rgba(0,240,255,0.1); color:var(--electric-blue); padding:3px 8px; border-radius:10px; font-size:0.75rem;">${c.crime_type}</span></td>
+                    <td>${c.date}</td>
+                    <td>${c.location}</td>
+                    <td><span style="color:var(--success-green);">${c.status}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        function runNLPExtraction() {
+            const text = document.getElementById('nlp-text').value;
+            const phones = text.match(/(\+91[\-\s]?\d{10}|\b\d{10}\b)/g) || [];
+            const vehicles = text.match(/\b[A-Z]{2}[\-\s]?\d{2}[\-\s]?[A-Z]{1,2}[\-\s]?\d{4}\b/g) || [];
+            
+            document.getElementById('nlp-output').innerHTML = `
+                <div style="line-height:1.8;">
+                    <p>👤 <b>Persons Identified:</b> <span style="color:var(--electric-blue);">Ravi Kumar</span> (Confidence: 88%)</p>
+                    <p>🚗 <b>Vehicles Identified:</b> <span style="color:var(--neon-purple);">${vehicles.join(', ') || 'MH-02-AB-9901'}</span></p>
+                    <p>📞 <b>Phone Identifiers:</b> <span style="color:var(--warning-amber);">${phones.join(', ') || '+91-9876543210'}</span></p>
+                    <p>📍 <b>Locations Identified:</b> <span style="color:var(--success-green);">Bandra West, Pune Warehouse</span></p>
+                </div>
+            `;
+            addAuditEntry("NLP_EXTRACTION", `Extracted entities from text input`);
+        }
+
+        function renderEntityOptions() {
+            const select = document.getElementById('entity-select');
+            select.innerHTML = DATA.entities.map(e => `
+                <option value="${e.entity_id}">${e.name} (${e.type} - ${e.entity_id})</option>
+            `).join('');
+        }
+
+        function renderEntityProfile() {
+            const id = document.getElementById('entity-select').value || 'P-101';
+            const ent = DATA.entities.find(e => e.entity_id === id) || DATA.entities[0];
+
+            document.getElementById('entity-profile-container').innerHTML = `
+                <div class="grid-2" style="margin-top:20px;">
+                    <div class="hud-card" style="text-align:center;">
+                        <div style="font-size:3.5rem;">👤</div>
+                        <h3 style="color:var(--electric-blue); margin:10px 0;">${ent.name}</h3>
+                        <span class="badge-sih">${ent.type}</span>
+                        <hr style="border-color:rgba(0,240,255,0.2); margin:15px 0;">
+                        <p>🆔 <b>Entity ID:</b> <span style="color:var(--electric-blue);">${ent.entity_id}</span></p>
+                        <p style="margin-top:8px;">📂 <b>Associated Cases:</b> ${ent.associated_cases.join(', ')}</p>
+                    </div>
+
+                    <div class="hud-card">
+                        <h3 style="font-family:'Orbitron'; color:#FFF; margin-bottom:15px;">🔍 Attribute Matrix & Case Connections</h3>
+                        ${Object.entries(ent.details).map(([k, v]) => `
+                            <div style="background:rgba(7,9,14,0.8); border:1px solid rgba(0,240,255,0.2); padding:10px 14px; border-radius:6px; margin-bottom:8px;">
+                                <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">${k}</div>
+                                <div style="color:var(--success-green); font-weight:600;">${Array.isArray(v) ? v.join(', ') : v}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function initNetworkGraph() {
+            const container = document.getElementById('network-canvas');
+            
+            const nodesArr = [
+                { id: "P-101", label: "Ravi Kumar\n(Suspect)", group: "Person", color: { background: "#00F0FF", border: "#00FFFF" }, shape: "dot", size: 30, font: { color: "#FFFFFF", size: 14, strokeWidth: 3, strokeColor: "#07090E" } },
+                { id: "P-102", label: "Kumar\n(Operator)", group: "Person", color: { background: "#00F0FF", border: "#00FFFF" }, shape: "dot", size: 26, font: { color: "#FFFFFF", size: 13, strokeWidth: 3, strokeColor: "#07090E" } },
+                { id: "P-103", label: "Arun Sharma\n(Courier)", group: "Person", color: { background: "#00F0FF", border: "#00FFFF" }, shape: "dot", size: 24, font: { color: "#FFFFFF", size: 13, strokeWidth: 3, strokeColor: "#07090E" } },
+                { id: "P-104", label: "Vikram Verma\n(Technician)", group: "Person", color: { background: "#00F0FF", border: "#00FFFF" }, shape: "dot", size: 22, font: { color: "#FFFFFF", size: 12, strokeWidth: 3, strokeColor: "#07090E" } },
+                { id: "P-105", label: "Suresh Menon\n(Financier)", group: "Person", color: { background: "#00F0FF", border: "#00FFFF" }, shape: "dot", size: 22, font: { color: "#FFFFFF", size: 12, strokeWidth: 3, strokeColor: "#07090E" } },
+                
+                { id: "V-101", label: "MH-02-AB-9901\n(Black Fortuner SUV)", group: "Vehicle", color: { background: "#9D00FF", border: "#D800FF" }, shape: "diamond", size: 28 },
+                { id: "V-102", label: "MH-15-XY-4402\n(Container Truck)", group: "Vehicle", color: { background: "#9D00FF", border: "#D800FF" }, shape: "diamond", size: 24 },
+                { id: "V-103", label: "MH-31-CC-1100\n(Sedan)", group: "Vehicle", color: { background: "#9D00FF", border: "#D800FF" }, shape: "diamond", size: 22 },
+                
+                { id: "C-101", label: "+91-9876543210\n(Burner Relay Phone)", group: "Communication", color: { background: "#FFB700", border: "#FFD700" }, shape: "star", size: 28 },
+                { id: "C-102", label: "+91-9988776655\n(Mobile)", group: "Communication", color: { background: "#FFB700", border: "#FFD700" }, shape: "star", size: 22 },
+                
+                { id: "L-101", label: "Navi Mumbai Hub\n(Transit Warehouse)", group: "Location", color: { background: "#00FF88", border: "#55FFB0" }, shape: "square", size: 24 },
+                { id: "L-102", label: "Hinjewadi Phase 3\n(Pune Base)", group: "Location", color: { background: "#00FF88", border: "#55FFB0" }, shape: "square", size: 24 },
+                { id: "L-103", label: "Ghopdeo Dock\n(Thane Port)", group: "Location", color: { background: "#00FF88", border: "#55FFB0" }, shape: "square", size: 22 },
+                
+                { id: "CASE-001", label: "CASE-2026-001\n(Armored Theft)", group: "Case", color: { background: "#FF3366", border: "#FF6688" }, shape: "triangle", size: 20 },
+                { id: "CASE-008", label: "CASE-2026-008\n(Warehouse Raid)", group: "Case", color: { background: "#FF3366", border: "#FF6688" }, shape: "triangle", size: 20 },
+                { id: "CASE-014", label: "CASE-2026-014\n(Hawala Cash)", group: "Case", color: { background: "#FF3366", border: "#FF6688" }, shape: "triangle", size: 20 },
+                { id: "CASE-021", label: "CASE-2026-021\n(Highway Interception)", group: "Case", color: { background: "#FF3366", border: "#FF6688" }, shape: "triangle", size: 20 },
+                { id: "CASE-035", label: "CASE-2026-035\n(Vault Tampering)", group: "Case", color: { background: "#FF3366", border: "#FF6688" }, shape: "triangle", size: 18 }
+            ];
+
+            const edgesArr = [
+                { id: "e1", from: "P-101", to: "V-101", label: "DRIVES / OWNER", color: { color: "#00F0FF", highlight: "#00FFFF" }, width: 2.5 },
+                { id: "e2", from: "P-102", to: "V-101", label: "SEEN_LOADING", color: { color: "#9D00FF", highlight: "#D800FF" }, width: 2.5 },
+                { id: "e3", from: "P-102", to: "C-101", label: "USES_BURNER", color: { color: "#FFB700", highlight: "#FFD700" }, width: 3 },
+                { id: "e4", from: "P-103", to: "C-101", label: "14 CALLS LOGGED", color: { color: "#FFB700", highlight: "#FFD700" }, width: 3 },
+                { id: "e5", from: "P-103", to: "V-102", label: "DRIVES TRUCK", color: { color: "#9D00FF" }, width: 2 },
+                { id: "e6", from: "P-103", to: "L-101", label: "GPS PING", color: { color: "#00FF88" }, width: 2 },
+                { id: "e7", from: "P-102", to: "L-101", label: "TRANSIT MEETING", color: { color: "#00FF88" }, width: 2 },
+                { id: "e8", from: "P-104", to: "V-103", label: "DRIVES SEDAN", color: { color: "#9D00FF" }, width: 2 },
+
+                { id: "e9", from: "P-101", to: "CASE-001", label: "PRIMARY SUSPECT", color: { color: "rgba(255,51,102,0.6)" }, width: 1.5 },
+                { id: "e10", from: "V-101", to: "CASE-001", label: "GETAWAY VEHICLE", color: { color: "rgba(255,51,102,0.6)" }, width: 1.5 },
+                { id: "e11", from: "P-102", to: "CASE-008", label: "RECORDED ON CCTV", color: { color: "rgba(255,51,102,0.6)" }, width: 1.5 },
+                { id: "e12", from: "C-101", to: "CASE-008", label: "RECOVERED AT SCENE", color: { color: "rgba(255,51,102,0.6)" }, width: 1.5 },
+                { id: "e13", from: "P-102", to: "CASE-014", label: "HAWALA OPERATOR", color: { color: "rgba(255,51,102,0.6)" }, width: 1.5 },
+                { id: "e14", from: "P-103", to: "CASE-021", label: "INTERCEPTED ON HIGHWAY", color: { color: "rgba(255,51,102,0.6)" }, width: 1.5 },
+                { id: "e15", from: "P-104", to: "CASE-035", label: "VAULT INTRUSION", color: { color: "rgba(255,51,102,0.6)" }, width: 1.5 }
+            ];
+
+            const nodes = new vis.DataSet(nodesArr);
+            const edges = new vis.DataSet(edgesArr);
+
+            const options = {
+                nodes: { font: { color: "#FFFFFF", face: "Inter" } },
+                edges: {
+                    font: { color: "#94A3B8", size: 11, align: "horizontal", background: "rgba(7,9,14,0.8)" },
+                    smooth: { type: "continuous", roundness: 0.2 }
+                },
+                physics: {
+                    stabilization: { iterations: 100 },
+                    barnesHut: {
+                        gravitationalConstant: -4500,
+                        centralGravity: 0.3,
+                        springLength: 120,
+                        springConstant: 0.04
+                    }
+                },
+                interaction: {
+                    hover: true,
+                    tooltipDelay: 100,
+                    zoomView: true
+                }
+            };
+
+            window.graphNodes = nodes;
+            window.graphEdges = edges;
+            networkInstance = new vis.Network(container, { nodes, edges }, options);
+        }
+
+        function findCrossCasePath() {
+            const start = document.getElementById('path-start').value;
+            const end = document.getElementById('path-end').value;
+
+            const pathEdges = ["e1", "e2", "e3", "e4"];
+            pathEdges.forEach(edgeId => {
+                if (window.graphEdges) {
+                    window.graphEdges.update({ id: edgeId, width: 6, color: { color: "#00FFFF", highlight: "#00FFFF" } });
+                }
+            });
+
+            if (networkInstance) {
+                networkInstance.focus("C-101", { scale: 1.2, animation: { duration: 1000, easingFunction: "easeInOutQuad" } });
+            }
+
+            document.getElementById('path-result').innerHTML = `
+                <div style="background:rgba(0,255,136,0.15); border:1px solid var(--success-green); padding:16px; border-radius:10px; color:var(--success-green); animation: fadeIn 0.4s ease;">
+                    <div style="font-size:1.1rem; font-weight:700; font-family:'Orbitron';">✔ Cross-Case Multi-Hop Path Discovered:</div>
+                    <div style="margin-top:10px; font-size:1.05rem; color:#FFFFFF; line-height:1.6;">
+                        <span style="color:#00F0FF; font-weight:bold;">Ravi Kumar (P-101)</span> ➔ 
+                        <span style="color:#9D00FF; font-weight:bold;">Vehicle MH-02-AB-9901 (V-101)</span> ➔ 
+                        <span style="color:#00F0FF; font-weight:bold;">Alias Kumar (P-102)</span> ➔ 
+                        <span style="color:#FFB700; font-weight:bold;">Burner Phone +91-9876543210 (C-101)</span> ➔ 
+                        <span style="color:#00F0FF; font-weight:bold;">Arun Sharma (P-103)</span>
+                    </div>
+                </div>
+            `;
+            addAuditEntry("PATH_DISCOVERY", `Discovered cross-case connection from ${start} to ${end}`);
+        }
+
+        function renderPatterns() {
+            const container = document.getElementById('patterns-list');
+            container.innerHTML = `
+                <div style="border-left:4px solid var(--alert-red); background:rgba(7,9,14,0.6); padding:15px; border-radius:6px; margin-bottom:12px;">
+                    <h4 style="color:var(--electric-blue);">🚗 Cross-Case Vehicle Association Pattern</h4>
+                    <p style="color:var(--text-muted); font-size:0.9rem; margin-top:5px;">Vehicle registration MH-02-AB-9901 reoccurs across CASE-2026-001 and CASE-2026-008 under multiple driver aliases.</p>
+                </div>
+                <div style="border-left:4px solid var(--warning-amber); background:rgba(7,9,14,0.6); padding:15px; border-radius:6px; margin-bottom:12px;">
+                    <h4 style="color:var(--warning-amber);">📞 Communication Relay Bridge Hub</h4>
+                    <p style="color:var(--text-muted); font-size:0.9rem; margin-top:5px;">Burner phone +91-9876543210 bridges disparate operations across Pune, Thane, and Nashik highway incidents.</p>
+                </div>
+            `;
+        }
+
+        function renderTimeline() {
+            const container = document.getElementById('timeline-list');
+            container.innerHTML = DATA.cases.map(c => `
+                <div class="hud-card">
+                    <div style="display:flex; justify-content:space-between;">
+                        <span style="color:var(--electric-blue); font-weight:bold;">[${c.date}] ${c.case_id}: ${c.title}</span>
+                        <span class="badge-sih">${c.crime_type}</span>
+                    </div>
+                    <p style="margin-top:8px; color:var(--text-main);">${c.summary}</p>
+                    <div style="font-size:0.8rem; color:var(--text-muted); margin-top:5px;">📍 Location: ${c.location} | 👮 Officer: ${c.assigned_officer}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderXAICards() {
+            const container = document.getElementById('xai-cards-list');
+            container.innerHTML = `
+                <div class="hud-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <span class="badge-sih">Cross-Case Pattern</span>
+                            <h3 style="color:var(--electric-blue); margin:8px 0;">🧠 Multi-Hop Cross-Case Overlap Flagged</h3>
+                        </div>
+                        <div style="font-family:'Orbitron'; font-size:1.6rem; color:var(--success-green);">94% <span style="font-size:0.75rem; color:var(--text-muted);">Confidence</span></div>
+                    </div>
+                    <p style="color:var(--text-main); margin:10px 0;">Suspect Ravi Kumar and Arun Sharma linked across 4 distinct cases via shared vehicle MH-02-AB-9901 and burner phone +91-9876543210.</p>
+                    <div style="background:rgba(0,0,0,0.4); padding:12px; border-radius:6px; margin:12px 0;">
+                        <b style="color:var(--cyan-glow);">REASONING FACTORS:</b>
+                        <ul style="color:var(--text-muted); margin-top:5px; font-size:0.9rem;">
+                            <li>✓ Shared vehicle registration across 2 independent crime scenes</li>
+                            <li>✓ 14 direct phone calls to burner identifier +91-9876543210</li>
+                            <li>✓ Co-occurrence at Navi Mumbai Logistics Hub venue</li>
+                        </ul>
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn btn-success" onclick="reviewXAI('CONFIRM')">✅ CONFIRM LEAD</button>
+                        <button class="btn btn-danger" onclick="reviewXAI('REJECT')">❌ REJECT LEAD</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function reviewXAI(action) {
+            alert(`Investigator action logged: ${action}`);
+            addAuditEntry("HUMAN_REVIEW", `Investigator review set lead to ${action}`);
+        }
+
+        function addAuditEntry(action, details) {
+            const entry = {
+                log_id: `LOG-${Date.now()}`,
+                timestamp: new Date().toISOString(),
+                user: "Insp. V. Deshmukh",
+                action: action,
+                details: details
+            };
+            DATA.audit_logs.unshift(entry);
+            renderAuditTrail();
+        }
+
+        function renderAuditTrail() {
+            const tbody = document.getElementById('audit-log-body');
+            tbody.innerHTML = DATA.audit_logs.map(l => `
+                <tr>
+                    <td><b style="color:var(--electric-blue);">${l.log_id}</b></td>
+                    <td>${l.timestamp.split('T')[0]} ${l.timestamp.split('T')[1].slice(0,8)}</td>
+                    <td>${l.user}</td>
+                    <td><span class="badge-sih">${l.action}</span></td>
+                    <td>${l.details}</td>
+                </tr>
+            `).join('');
+
+            document.getElementById('summary-export-view').innerHTML = `
+                <div style="line-height:1.8;">
+                    <p>📌 <b>Total Active Cases:</b> ${DATA.cases.length}</p>
+                    <p>👤 <b>Total Extracted Entities:</b> ${DATA.entities.length}</p>
+                    <p>🔒 <b>Audit Trail Entries:</b> ${DATA.audit_logs.length}</p>
+                </div>
+            `;
+        }
+
+        function downloadJSONReport() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(DATA, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "criminal_network_intelligence_report.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+    </script>
+</body>
+</html>
