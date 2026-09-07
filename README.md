@@ -193,5 +193,119 @@ During a live demonstration:
 *Department of Computer Science and Business Systems (CSBS)*
 
 ---
+## prototype 
+
+# Voice Script — CrimeGraph (AI-Powered Criminal Network Intelligence System)
+
+**Total estimated runtime:** ~4–5 minutes
+**Tone:** Confident, professional, demo-style
+
+---
+
+## 🎬 SCENE 1 — Title / Intro (0:00–0:20)
+
+**[On screen: Project title "CrimeGraph — AI-Powered Criminal Network Intelligence System"]**
+
+**Narration:**
+"Hi everyone, welcome back to my channel. Today I'm showing you a project I built for Smart India Hackathon, called **CrimeGraph**. It's an AI-powered Criminal Network Intelligence and Investigation Support System, designed to help police investigators connect the dots across multiple cases."
+
+---
+
+## 🎬 SCENE 2 — The Problem & What It Does (0:20–1:00)
+
+**[On screen: Text overlay of the problem statement]**
+
+**Narration:**
+"Here's the problem it solves. Investigators usually deal with case records scattered across separate files — people, vehicles, phone numbers, locations, organizations, events, transactions. It's really hard to manually spot when two unrelated cases are actually connected.
+
+CrimeGraph fixes that. It automatically reads through case records, extracts entities using **spaCy NLP**, and builds an interactive **Knowledge Graph**. Then it runs behavioral pattern detection, calculates network centrality — basically, which entities are the most 'connected' — and it can find hidden multi-hop links between suspects across totally different cases."
+
+---
+
+## 🎬 SCENE 3 — The Ethical Boundary (1:00–1:25)
+
+**[On screen: Highlight the "Important" callout box from the README]**
+
+**Narration:**
+"One important thing before we go further — this system is strictly an investigation support tool. It does **not** predict guilt, and it does **not** make arrest recommendations. All it does is highlight evidence-backed patterns and connections for a human investigator to review. Every AI suggestion has to be manually confirmed or rejected, and that decision gets logged — so there's always a clear audit trail."
+
+---
+
+## 🎬 SCENE 4 — System Architecture (1:25–1:50)
+
+**[On screen: Show the architecture diagram]**
+
+**Narration:**
+"Here's how it's built. On top, there's a Streamlit dashboard — the Investigator Command Center — styled with a dark, cyber theme. That talks to a FastAPI backend, which handles authentication, cases, the network graph, pattern detection, and the explainable AI layer. Behind that sits SQLite or PostgreSQL for case data, and NetworkX or Neo4j for the actual knowledge graph."
+
+---
+
+## 🎬 SCENE 5 — Project Structure on GitHub (1:50–2:40)
+
+**[On screen: Screen recording of the GitHub repository page]**
+
+**Narration:**
+"Let's look at how the project is structured on GitHub.
+
+- The **`backend/`** folder has `main.py`, which is the FastAPI application — handling all the API endpoints.
+- The **`frontend/`** folder has `app.py`, the Streamlit command center that investigators actually interact with.
+- There's a **`tests/`** folder with `test_ai_engine.py`, which is a Pytest suite that checks the AI's entity extraction and pattern detection logic actually works.
+- The **`.streamlit/config.toml`** file sets up that dark cyber theme — black background, cyan highlights.
+- Then there's `criminal_intelligence.db`, the SQLite database with tables for cases, entities, relationships, audit logs, and investigator reviews.
+- And finally, `docker-compose.yml` and `requirements.txt`, which let anyone spin up the whole system — backend, frontend, and an optional Neo4j graph database — with a single Docker command."
+
+---
+
+## 🎬 SCENE 6 — Database Design (2:40–3:00)
+
+**[On screen: Show the database schema table from the README]**
+
+**Narration:**
+"Under the hood, there are five main tables. `Cases` stores the case details. `Entities` stores every person, vehicle, phone number, or location found. `Relationships` links entities together with a confidence score and evidence reference. `Audit logs` track every action for accountability. And `Reviews` stores whether an investigator confirmed or rejected each AI-generated insight."
+
+---
+
+## 🎬 SCENE 7 — Demo Walkthrough (3:00–4:20)
+
+**[On screen: Screen recording of the running app, or simulated screens if not deployed]**
+
+**Narration:**
+"Now let's walk through how an investigator would actually use it.
+
+**[Case Management]**
+First, they open **Case Management**, where all case files are loaded — from `CASE-2026-001` all the way to `CASE-2026-021`.
+
+**[Network Explorer]**
+Next, they go to the **Network Explorer** and click **Discover Path** between two suspects — let's say Ravi Kumar and Arun Sharma. Even though they appear in completely different case files, the system uncovers a hidden four-step connection: Ravi Kumar is linked to a vehicle, that vehicle is linked to an alias, that alias is linked to a burner phone number, and that phone number is linked directly to Arun Sharma.
+
+**[AI Insights / XAI cards]**
+Then there's the **AI Insights** panel — these are Explainable AI cards. Each one shows exactly which evidence supports the connection, along with a confidence score. The investigator can then click **Confirm** or **Reject** right there, and that decision gets written straight into the audit log.
+
+**[Reporting]**
+Finally, the system can generate a full PDF investigation report summarizing the case network and findings, ready to attach to the official case file."
+
+---
+
+## 🎬 SCENE 8 — Outro (4:20–4:45)
+
+**[On screen: GitHub link on screen]**
+
+**Narration:**
+"So that's **CrimeGraph** — an AI-powered system that helps investigators connect the evidence, discover hidden patterns, and support real investigations, without ever replacing human judgment. I'll drop the GitHub repo link in the description below. Thanks for watching — if you found this useful, drop a like and subscribe for more project walkthroughs!"
+
+**[End card / Subscribe animation]**
+
+---
+
+## 📋 Quick Reference (for description box)
+
+**Title suggestion:** CrimeGraph — AI-Powered Criminal Network Intelligence & Investigation Support System | SIH Project Walkthrough
+
+**Description suggestion:**
+> A walkthrough of CrimeGraph — an AI-powered investigation support platform that extracts entities with spaCy NLP, builds an interactive knowledge graph, detects behavioral patterns, and surfaces explainable, evidence-backed cross-case connections for law enforcement investigators.
+>
+> 🔗 GitHub: https://github.com/Madhumitha42/AI-Powered-Criminal-Network-Intelligence-System
+>
+> Built with: Python, FastAPI, Streamlit, spaCy, NetworkX, Neo4j, Scikit-Learn, Docker
 
 ## 📄 License
